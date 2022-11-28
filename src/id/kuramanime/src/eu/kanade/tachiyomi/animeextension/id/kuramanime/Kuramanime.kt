@@ -44,7 +44,10 @@ class Kuramanime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
         anime.genre = document.select("div.anime__details__widget > div > div:nth-child(2) > ul > li:nth-child(1)").text().replace("Genre: ", "")
         anime.status = status
         anime.artist = document.select("div.anime__details__widget > div > div:nth-child(2) > ul > li:nth-child(5)").text()
-        anime.author = "UNKNOWN"
+        anime.author = when {
+            infox.select("div.anime__details__title > span").isNullOrEmpty() -> "Alternative = -"
+            else -> "Alternative = " + infox.select("div.anime__details__title > span").text()
+        }
         return anime
     }
 
@@ -96,9 +99,9 @@ class Kuramanime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
 
     override fun latestUpdatesNextPageSelector(): String = "div.product__pagination > a:last-child"
 
-    override fun latestUpdatesRequest(page: Int): Request = GET("$baseUrl/anime?order_by=updated&page=$page")
+    override fun latestUpdatesRequest(page: Int): Request = GET("$baseUrl/anime?order_by=latest&page=$page")
 
-    override fun latestUpdatesSelector(): String = "div.product__item"
+    override fun latestUpdatesSelector(): String = "div.product__page__content"
 
     override fun popularAnimeFromElement(element: Element): SAnime = parseShortInfo(element)
 
@@ -106,7 +109,7 @@ class Kuramanime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
 
     override fun popularAnimeRequest(page: Int): Request = GET("$baseUrl/anime")
 
-    override fun popularAnimeSelector(): String = "div.product__item"
+    override fun popularAnimeSelector(): String = "div.product__page__content"
 
     override fun searchAnimeFromElement(element: Element): SAnime = parseShortInfo(element)
 
@@ -114,7 +117,7 @@ class Kuramanime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
 
     override fun searchAnimeRequest(page: Int, query: String, filters: AnimeFilterList): Request = GET("$baseUrl/anime?search=$query&page=$page")
 
-    override fun searchAnimeSelector(): String = "div.product__item"
+    override fun searchAnimeSelector(): String = "div.product__page__content"
 
     override fun videoListSelector() = "#player > source"
     override fun List<Video>.sort(): List<Video> {
