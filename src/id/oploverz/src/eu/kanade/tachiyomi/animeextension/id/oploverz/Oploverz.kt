@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class Oploverz : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
-    override val baseUrl: String = "https://oploverz.asia"
+    override val baseUrl: String = "https://oploverz.cx"
     override val lang: String = "id"
     override val name: String = "Oploverz"
     override val supportsLatest: Boolean = true
@@ -60,8 +60,8 @@ class Oploverz : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
 
     private fun parseStatus(statusString: String): Int {
         return when (statusString.toLowerCase(Locale.US)) {
-            "ongoing" -> SAnime.ONGOING
-            "completed" -> SAnime.COMPLETED
+            "Ongoing" -> SAnime.ONGOING
+            "Completed" -> SAnime.COMPLETED
             else -> SAnime.UNKNOWN
         }
     }
