@@ -183,7 +183,7 @@ jobs:
     name: Publish repo
     needs:
       - build_individual
-    if: "github.repository == 'jmir1/aniyomi-extensions'"
+    if: "github.repository == 'FrozzDay/aniyomi-extensions'"
     runs-on: ubuntu-latest
     steps:
       - name: Download APK artifacts
