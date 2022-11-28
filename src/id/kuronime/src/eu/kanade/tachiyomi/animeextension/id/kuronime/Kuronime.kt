@@ -12,6 +12,7 @@ import eu.kanade.tachiyomi.animesource.model.Video
 import eu.kanade.tachiyomi.animesource.online.ParsedAnimeHttpSource
 import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.util.asJsoup
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.jsoup.nodes.Document
@@ -26,7 +27,7 @@ class Kuronime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
     override val lang: String = "id"
     override val name: String = "Kuronime"
     override val supportsLatest: Boolean = true
-
+    override val client: OkHttpClient = network.cloudflareClient
     private val preferences: SharedPreferences by lazy {
         Injekt.get<Application>().getSharedPreferences("source_$id", 0x0000)
     }
@@ -37,7 +38,7 @@ class Kuronime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
         val status = parseStatus(infodetail.select("ul > li:nth-child(3)").text().replace("Status: ", ""))
         anime.title = infodetail.select("ul > li:nth-child(1)").text().replace("Judul: ", "")
         anime.genre = infodetail.select("ul > li:nth-child(2)").joinToString(", ") { it.text() }
-        anime.status = status
+        anime.status = infodetail.select("ul > li:nth-child(3)").text().replace("Status: ", "")
         anime.artist = infodetail.select("ul > li:nth-child(4)").text().replace("Studio: ", "")
         anime.author = "UNKNOWN"
         anime.description = "Synopsis: \n" + document.select("div.main-info > div.con > div.r > div > span > p").text()
@@ -46,8 +47,8 @@ class Kuronime : ConfigurableAnimeSource, ParsedAnimeHttpSource() {
 
     private fun parseStatus(statusString: String): Int {
         return when (statusString.toLowerCase(Locale.US)) {
-            "ongoing" -> SAnime.ONGOING
-            "completed" -> SAnime.COMPLETED
+            "Ongoing" -> SAnime.ONGOING
+            "Completed" -> SAnime.COMPLETED
             else -> SAnime.UNKNOWN
         }
     }
