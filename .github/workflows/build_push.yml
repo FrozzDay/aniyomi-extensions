@@ -170,7 +170,7 @@ jobs:
 
       - name: Upload APKs (chunk ${{ matrix.chunk }})
         uses: actions/upload-artifact@v2
-        if: "github.repository == 'jmir1/aniyomi-extensions'"
+        if: "github.repository == 'FrozzDay/aniyomi-extensions'"
         with:
           name: "individual-apks-${{ matrix.chunk }}"
           path: "**/*.apk"
